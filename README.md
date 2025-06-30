@@ -64,6 +64,24 @@ python manage.py migrate
 python manage.py runserver
 ```
 
+## Docker 실행
+```bash
+docker compose up --build
+```
+혹은
+```
+# 최초 한 번
+docker compose build          # 이미지 빌드
+docker compose up -d          # 컨테이너 실행
+
+# 로그 확인
+docker compose logs -f backend
+docker compose logs -f db
+
+# 중지
+docker compose down
+
+```
 ---
 
 ## 📑 API 명세 (Swagger)
@@ -74,6 +92,10 @@ DRF + drf-yasg를 사용해 Swagger 문서를 제공합니다.
 
 ```
 http://localhost:8000/swagger/
+```
+### Docker 사용시
+```
+http://0.0.0.0:8000/swagger/
 ```
 
 ---
