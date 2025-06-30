@@ -7,7 +7,6 @@ class MovieDetailSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     title = serializers.CharField(max_length=255)
     overview = serializers.CharField()
-    poster_url = serializers.URLField(max_length=255, allow_null=True)
     release_date = serializers.DateField()
     rating = serializers.FloatField(min_value=0, max_value=10)
     genres = serializers.ListField(child=serializers.CharField())
@@ -22,7 +21,6 @@ class MovieListOutputSerializer(serializers.Serializer):
 class MovieInputSerializer(serializers.Serializer):
     title = serializers.CharField(required=False, max_length=255)
     overview = serializers.CharField(required=False)
-    poster = serializers.ImageField(required=False)  # ← 파일 필드로 변경
     release_date = serializers.DateField(required=False)
     rating = serializers.FloatField(required=False, min_value=0, max_value=10)
     genres = serializers.ListField(child=serializers.CharField(max_length=255), allow_empty=False, required=False)

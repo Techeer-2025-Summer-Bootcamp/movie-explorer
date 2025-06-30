@@ -26,17 +26,13 @@ SECRET_KEY = get_secret("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 # CORS
 CORS_ALLOWED_ORIGIN_REGEXES = [r"^http:\/\/localhost:*([0-9]+)?$", r"^https:\/\/localhost:*([0-9]+)?$"]
 
 CORS_ORIGIN_WHITELIST = [
-    "https://movie-dev.medihub.ai",
-    "https://movie-us-az.medihub.ai",
-    "https://movie.medihub.ai",
-    "https://movie-admin-dev.medihub.ai",
-    "https://movie-admin.medihub.ai",
+    "",
 ]
 CORS_ALLOW_CREDENTIALS = True
 
@@ -67,6 +63,8 @@ INSTALLED_APPS = [
     "movie",
     "rest_framework",
     "drf_yasg",
+    "drf_spectacular",
+    "drf_spectacular_sidecar",
 ]
 
 MIDDLEWARE = [
@@ -78,6 +76,10 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+
+REST_FRAMEWORK = {
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
 
 ROOT_URLCONF = "config.urls"
 

@@ -1,58 +1,46 @@
+version: "3.9"
 
 services:
-  compression_gateway:
-    build:
-      context: ./compression_gateway
-      dockerfile: Dockerfile
-    container_name: compression_gateway
-    ports:
-      - "5011:5011"
-    env_file:
-      - .env
-    environment:
-      - PYTHONUNBUFFERED=1
-      - PYTHONDONTWRITEBYTECODE=1
-      - TZ=${TZ}
-    volumes:
-      - ./compression_gateway:/app
-    command: >
-      /bin/bash -c "python3 dicom_gateway_api.py"
+  db:
+    image: mysql:8.4
+    container_name: mysql_service
     restart: unless-stopped
-    stdin_open: false
-    tty: false
+    env_file: .env
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      TZ: ${TZ}
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    ports:
+      - "13306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
 
-  movie_backend:
+  backend:
     build:
-      context: ./movie-backend-web
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: backend/Dockerfile
       args:
         - TZ=${TZ}
     container_name: movie_backend
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - ./backend:/app            # 코드 hot-reload
     ports:
       - "8000:8000"
-    cap_add:
-      - NET_ADMIN
-    env_file:
-      - .env
-    environment:
-      - WORKING_DIRECTORY=/home/movie-dh/movie-backend-web
-      - PYTHONUNBUFFERED=1
-      - PYTHONDONTWRITEBYTECODE=1
-      - TZ=${TZ}
-    volumes:
-      - ./movie-backend-web:/home/movie-dh/movie-backend-web  # movie-backend-web 디렉토리 마운트
-    ulimits:
-      nofile:
-        soft: 65535
-        hard: 65535
-    mem_limit: 4g
-    command: >
-      /bin/bash -c "
-        python3 manage.py compilemessages &&
-        python3 manage.py migrate &&
-        exec python3 /home/movie-dh/movie-backend-web/manage.py runsslserver --certificate ssl/localhost+3.pem --key ssl/localhost+3-key.pem 0.0.0.0:8000"
-    restart: unless-stopped
-    stdin_open: false
-    tty: false
     depends_on:
-      - compression_gateway  # compression_gateway가 먼저 시작되도록 설정
+      - db
+
+  adminer:               # Workbench 대신 웹 UI ( http://localhost:8080 )
+    image: adminer
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+
+volumes:
+  db_data:
