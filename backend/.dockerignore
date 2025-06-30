@@ -1,0 +1,7 @@
+.git
+.dockerignore
+.gitignore
+secrets.json
+.env
+*.log
+movie_firebase.json

@@ -6,11 +6,7 @@ def success_response(data=None, status=200):
 
 
 def fail_response(message, errors=None, status=400):
-    payload = {
-        "status": "fail",
-        "message": message,
-        "errors": errors or [],
-    }
+    payload = {"status": "fail", "message": message, "errors": errors or []}
     return Response(payload, status=status)
 
 

@@ -1,22 +1,16 @@
-from rest_framework.exceptions import APIException
 from rest_framework import status
+from rest_framework.exceptions import APIException
 
 
-class BadRequest(APIException):
-    status_code = status.HTTP_400_BAD_REQUEST
-    default_detail = "잘못된 요청입니다."
-    default_code = "bad_request"
+class FailException(APIException):
+    status_code = 400
 
 
-class NotFound(APIException):
-    status_code = status.HTTP_404_NOT_FOUND
-    default_detail = "요청한 리소스를 찾을 수 없습니다."
-    default_code = "not_found"
+class ErrorException(APIException):
+    status_code = 500
 
 
-class MovieNotFound(NotFound):
-    default_detail = {
-        "field": "movieId",
-        "code": "movie_not_found",
-        "message": "영화 정보가 존재하지 않습니다.",
-    }
+class MovieNotFound(FailException):
+    status_code = 404 
+    default_detail = "영화 정보가 존재하지 않습니다."
+    default_code =  "movie_not_found"
