@@ -10,14 +10,13 @@ class Movie(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)  # 생성 시 자동 저장
     updated_at = models.DateTimeField(auto_now=True)  # 수정 시 자동 갱신
-    genres = models.ManyToManyField(
-        'Genre', through='MovieGenre', related_name='movies'
-    )
+    genres = models.ManyToManyField("Genre", through="MovieGenre", related_name="movies")
+
     def __str__(self):
         return self.title
-    
+
     class Meta:
-        db_table = 'movie'
+        db_table = "movie"
 
 
 class Genre(models.Model):

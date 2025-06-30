@@ -1,0 +1,58 @@
+
+services:
+  compression_gateway:
+    build:
+      context: ./compression_gateway
+      dockerfile: Dockerfile
+    container_name: compression_gateway
+    ports:
+      - "5011:5011"
+    env_file:
+      - .env
+    environment:
+      - PYTHONUNBUFFERED=1
+      - PYTHONDONTWRITEBYTECODE=1
+      - TZ=${TZ}
+    volumes:
+      - ./compression_gateway:/app
+    command: >
+      /bin/bash -c "python3 dicom_gateway_api.py"
+    restart: unless-stopped
+    stdin_open: false
+    tty: false
+
+  movie_backend:
+    build:
+      context: ./movie-backend-web
+      dockerfile: Dockerfile
+      args:
+        - TZ=${TZ}
+    container_name: movie_backend
+    ports:
+      - "8000:8000"
+    cap_add:
+      - NET_ADMIN
+    env_file:
+      - .env
+    environment:
+      - WORKING_DIRECTORY=/home/movie-dh/movie-backend-web
+      - PYTHONUNBUFFERED=1
+      - PYTHONDONTWRITEBYTECODE=1
+      - TZ=${TZ}
+    volumes:
+      - ./movie-backend-web:/home/movie-dh/movie-backend-web  # movie-backend-web 디렉토리 마운트
+    ulimits:
+      nofile:
+        soft: 65535
+        hard: 65535
+    mem_limit: 4g
+    command: >
+      /bin/bash -c "
+        python3 manage.py compilemessages &&
+        python3 manage.py migrate &&
+        exec python3 /home/movie-dh/movie-backend-web/manage.py runsslserver --certificate ssl/localhost+3.pem --key ssl/localhost+3-key.pem 0.0.0.0:8000"
+    restart: unless-stopped
+    stdin_open: false
+    tty: false
+    depends_on:
+      - compression_gateway  # compression_gateway가 먼저 시작되도록 설정
