@@ -1,4 +1,4 @@
-# 🎬 movie-explorer-backend
+# 🎬 movie-explorer
 
 Django + DRF 기반의 영화 탐색 백엔드 API입니다.  
 영화의 등록, 수정, 삭제, 상세조회 및 목록 조회 기능을 제공합니다.
