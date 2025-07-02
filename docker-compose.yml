@@ -3,9 +3,9 @@ version: "3.9"
 services:
   db:
     image: mysql:8.4
-    container_name: mysql_service
+    container_name: db
     restart: unless-stopped
-    env_file: .env
+    # env_file: .env
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
       MYSQL_DATABASE: ${DB_NAME}
@@ -25,16 +25,16 @@ services:
       args:
         - TZ=${TZ}
     container_name: movie_backend
-    restart: unless-stopped
+    # restart: unless-stopped
     env_file: .env
     volumes:
-      - ./backend:/app            # 코드 hot-reload
+      - ./backend:/app # 코드 hot-reload
     ports:
       - "8000:8000"
     depends_on:
       - db
 
-  adminer:               # Workbench 대신 웹 UI ( http://localhost:8080 )
+  adminer: # Workbench 대신 웹 UI ( http://localhost:8080 )
     image: adminer
     restart: unless-stopped
     ports:
